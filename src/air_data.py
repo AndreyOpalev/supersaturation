@@ -1,9 +1,11 @@
 import pandas as pd
-import numpy as np
 import os
 import matplotlib.pyplot as pyplot
 import matplotlib.dates as mdates
-import matplotlib.ticker as mticker
+import matplotlib.units as munits
+import numpy as np
+import datetime as datetime
+
 
 class AirData:
     """ Class to gather function to handle the air (humidity) data """
@@ -60,47 +62,42 @@ class AirData:
             if date in f:
                 files_to_load.append(f)
 
-
-        common_df = pd.DataFrame();
+        common_df = pd.DataFrame()
         for f in files_to_load:
             f = self.directory + "/" + f
             print("Loading {}.".format(f))
-            
-            # catch, if possible, "UnicodeDecodeError: 'utf-8' codec can't 
-            # decode byte 0xb0 in position 38: invalid start byte". 
+
+            # catch, if possible, "UnicodeDecodeError: 'utf-8' codec can't
+            # decode byte 0xb0 in position 38: invalid start byte".
             # There is argument "encoding_errorsstr"= {ignore, string, replace, etc}
-            df = pd.read_csv(f, 
-                             sep=sep, 
-                             encoding='cp1251', 
+            df = pd.read_csv(f,
+                             sep=sep,
+                             encoding='cp1251',
                              index_col=0,
-                             header = 0,
-                             names = ['Date', 'Time', 'Humidity', 'Temp', 'DewTemp', 'PSYC'])
-       
+                             header=0,
+                             names=['Date', 'Time', 'Humidity', 'Temp', 'DewTemp', 'PSYC'])
+
             # Convert Date string ('DD.MM.YYYY') to datetime object
-            # df['Date'] = pd.Series(val.date() for val in pd.to_datetime(df['Date'], format= '%d.%m.%Y'))
-            df['Date'] = pd.to_datetime(df['Date'], format= dateformat)
-       
-            # Convert 'Time' string to datetime object
-            # dfDatime'] = pd.Series(val.date() for val in pd.to_datetime(df['Date'], format= '%d.%m.%Y'))
-            # df['Time'] = pd.DatetimeIndex(pd.to_datetime(df['Time'], format= '%H:%M:%S')).time
-            df['Time'] = pd.to_datetime(df['Time'], format= timeformat)
+            df['Date'] = pd.to_datetime(df['Date'], format=dateformat)
+
+            # dateformat 'Time' string to datetime object
+            df['Time'] = pd.to_datetime(df['Time'], format=timeformat)
 
             common_df = pd.concat([common_df, df])
 
-        # Save the read data    
+        # Sort and save the read data
+        common_df = common_df.sort_values(by=['Time'])
+        common_df = common_df.reset_index(drop=True)
         self.air_df = common_df
 
     def get_data(self):
         return self.air_df
-        
+
     def get_filenames(self):
         all_files = os.listdir(self.directory)
         csv_files = []
         for file in all_files:
             if file.endswith(".csv"):
                 csv_files.append(file)
-                
+ 
         return csv_files
-        
-    def plot(self):
-        "Plots in a separete figure all air data"
