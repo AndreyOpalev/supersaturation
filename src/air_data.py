@@ -13,42 +13,44 @@ class AirData:
         self.air_df = pd.DataFrame()
 
     def plot_loaded_data(self):
-        fig, axes1 = pyplot.subplots(constrained_layout=True)
 
-        # Humidity (left axis)
-        axes1.xaxis.set_major_locator(mticker.MaxNLocator(nbins = 6))
-        axes1.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
-        axes1.set_xlabel('Time')
-        axes1.set_ylabel('Humidity, %')
-        l1, = axes1.plot(self.air_df.Time,
-                         self.air_df.Humidity,
-                         label = 'Humidity',
-                         color='blue')
+        # Time is always a problem
+        converter = mdates.ConciseDateConverter()
+        munits.registry[np.datetime64] = converter
+        munits.registry[datetime.date] = converter
+        munits.registry[datetime.datetime] = converter
 
-        axes2 = axes1.twinx()
+        fig = pyplot.figure(figsize=(10, 10))
 
-        # Air and dew temperatures (right axis)
-        axes2.set_ylabel('Temperature, deg')
-        # axes2.tick_params(axis='y', labelcolor='orange') # does not work ok in jupyter
-        l2, = axes2.plot(self.air_df.Time,
-                         self.air_df.Temp,
-                         label = 'Temperature',
-                         color='orange')
+        # Plot Humidity
+        ax1 = fig.add_subplot(311)
+        ax1.set_ylabel('Humidity, %')
+        ax1.grid(True)
+        ax1.plot(self.air_df.Time, self.air_df.Humidity, color='blue')
+
+        # Plot Temperature
+        ax2 = fig.add_subplot(312, sharex=ax1)
+        ax2.set_ylabel('Temperature, deg')
+        ax2.grid(True)
+        ax2.plot(self.air_df.Time, self.air_df.Temp, color='orange')
+
+        # Plot Dew temperature
+        ax3 = fig.add_subplot(313, sharex=ax1, sharey=ax2)
+        ax3.set_ylabel('Dew temperature, deg')
+        ax3.grid(True)
+        ax3.plot(self.air_df.Time, self.air_df.DewTemp, color='orange')
         
-        l3, = axes2.plot(self.air_df.Time,
-                         self.air_df.DewTemp,
-                         label = 'Dew temperature',
-                         color='orange',
-                         linestyle='dashed')
-
-        axes2.legend([l1, l2, l3], ['Humidity', 'Temperature (right)', 'Dew temperature (right)'])
-
-        axes1.grid(True, axis='x')
+        # Plot
+        ax1.set_title("Loaded air data")
+        pyplot.setp(ax1.get_xticklabels(), visible=False)
+        pyplot.setp(ax2.get_xticklabels(), visible=False)
         pyplot.show()
-       # pyplot.waitforbuttonpress()
-        
-        
-    def load_data_file(self, date, sep=';', dateformat='%d.%m.%Y', timeformat='%H:%M:%S'):
+
+    def load_data_file(self,
+                       date,
+                       sep=';',
+                       dateformat='%d.%m.%Y',
+                       timeformat='%H:%M:%S'):
 
         # Select the files to loaded based on date. It expects DDMMYY
         # format.
