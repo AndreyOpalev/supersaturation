@@ -77,8 +77,8 @@ class Supersaturation:
         full_path = "{}/supersaturation_{}_{}_{}.csv".format(
             self.path_to_output,
             data["Date"].iloc[0],
-            data["Time"].iloc[0].strftime('%H:%M:%S'),
-            data["Time"].iloc[-1].strftime('%H:%M:%S'))
+            data["Time"].iloc[0].strftime('%H-%M-%S'),
+            data["Time"].iloc[-1].strftime('%H-%M-%S'))
 
         # Make timestamp relative and we did it after, since
         # the start and end time is used to generate filename
