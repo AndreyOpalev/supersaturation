@@ -18,12 +18,16 @@ class Supersaturation:
                  path_to_air_data,
                  path_to_output,
                  cooling_speed,
-                 air_data_date_format):
+                 air_data_date_format='%d.%m.%Y',
+                 air_data_time_format='%H:%M:%S',
+                 air_data_sep=';'):
         self.experiments = ExperimentNotes(path_to_experiments)
         self.air_data = AirData(path_to_air_data)
         self.path_to_output = path_to_output
         self.cooling_speed = cooling_speed
         self.air_data_date_format = air_data_date_format
+        self.air_data_time_format = air_data_time_format
+        self.air_data_sep = air_data_sep
 
     def print_experiments(self):
         all_notes = self.experiments.get_experiment_list()
@@ -42,8 +46,9 @@ class Supersaturation:
         # Load air data correspondig to the date
         date_str = experiment.date.strftime("%d%m%y")
         self.air_data.load_data_file(date_str,
-                                     sep=";",
-                                     dateformat=self.air_data_date_format)
+                                     sep=self.air_data_sep,
+                                     dateformat=self.air_data_date_format,
+                                     timeformat=self.air_data_time_format)
 
         # print("Type of time:", type(experiment.start.values[0]))
         # Convert Pandas Series type to
