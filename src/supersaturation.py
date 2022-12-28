@@ -66,7 +66,7 @@ class Supersaturation:
 
         # Create folder if does not exist
         if not os.path.exists(self.path_to_output):
-           os.makedirs(self.path_to_output)
+            os.makedirs(self.path_to_output)
 
         # Make the printed date and time values without extra info
         # and don't change the computed data itself.
