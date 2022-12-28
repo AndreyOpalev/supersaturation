@@ -83,6 +83,12 @@ class AirData:
             # dateformat 'Time' string to datetime object
             df['Time'] = pd.to_datetime(df['Time'], format=timeformat)
 
+            # replace float's decimal separator (use always .)
+            df['Humidity'] = (df['Humidity'].str.replace(',', '.')).astype(float)
+            df['Temp'] = (df['Temp'].str.replace(',', '.')).astype(float)
+            df['DewTemp'] = (df['DewTemp'].str.replace(',', '.')).astype(float)
+            df['PSYC'] = (df['PSYC'].str.replace(',', '.')).astype(float)
+
             common_df = pd.concat([common_df, df])
 
         # Sort and save the read data
