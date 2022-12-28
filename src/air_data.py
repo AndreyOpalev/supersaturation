@@ -73,9 +73,10 @@ class AirData:
             df = pd.read_csv(f,
                              sep=sep,
                              encoding='cp1251',
-                             index_col=0,
+                             index_col='Index',
                              header=0,
-                             names=['Date', 'Time', 'Humidity', 'Temp', 'DewTemp', 'PSYC'])
+                             usecols=[0, 1, 2, 3, 4, 5, 6],
+                             names=['Index', 'Date', 'Time', 'Humidity', 'Temp', 'DewTemp', 'PSYC'])
 
             # Convert Date string ('DD.MM.YYYY') to datetime object
             df['Date'] = pd.to_datetime(df['Date'], format=dateformat)
