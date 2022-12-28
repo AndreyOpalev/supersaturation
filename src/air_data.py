@@ -85,10 +85,10 @@ class AirData:
             df['Time'] = pd.to_datetime(df['Time'], format=timeformat)
 
             # replace float's decimal separator (use always .)
-            df['Humidity'] = (df['Humidity'].str.replace(',', '.')).astype(float)
-            df['Temp'] = (df['Temp'].str.replace(',', '.')).astype(float)
-            df['DewTemp'] = (df['DewTemp'].str.replace(',', '.')).astype(float)
-            df['PSYC'] = (df['PSYC'].str.replace(',', '.')).astype(float)
+            df['Humidity'] = (df['Humidity'].astype(str).str.replace(',', '.')).astype(float)
+            df['Temp'] = (df['Temp'].astype(str).str.replace(',', '.')).astype(float)
+            df['DewTemp'] = (df['DewTemp'].astype(str).str.replace(',', '.')).astype(float)
+            df['PSYC'] = (df['PSYC'].astype(str).str.replace(',', '.')).astype(float)
 
             common_df = pd.concat([common_df, df])
 
