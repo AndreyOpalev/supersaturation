@@ -107,8 +107,8 @@ class AirData:
     def get_filenames(self):
         all_files = os.listdir(self.directory)
         csv_files = []
-        for file in all_files:
-            if file.endswith(".csv"):
-                csv_files.append(file)
+        for f in all_files:
+            if f.endswith(".csv"):
+                csv_files.append(f)
  
         return csv_files
