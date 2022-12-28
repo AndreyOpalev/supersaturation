@@ -92,8 +92,12 @@ class AirData:
             common_df = pd.concat([common_df, df])
 
         # Sort and save the read data
-        common_df = common_df.sort_values(by=['Time'])
-        common_df = common_df.reset_index(drop=True)
+        if not common_df.empty:
+            common_df = common_df.sort_values(by=['Time'])
+            common_df = common_df.reset_index(drop=True)
+        else:
+            print("Error: Air data is empty")
+
         self.air_df = common_df
 
     def get_data(self):
